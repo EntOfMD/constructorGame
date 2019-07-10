@@ -1,0 +1,15 @@
+{
+  "name": "constructorgame",
+  "version": "1.0.0",
+  "description": "using Node.js and Inquirer package, creates a classic RPG",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "inquirer": "^6.4.1"
+  }
+}
