@@ -39,9 +39,10 @@ function Character(name, profession, gender, age, strength, hp) {
   };
 }
 
-// let Rick = new character('Rick', 'Scientist', 'Alien', 100, 100, 999);
+let Rick = new Character('Rick', 'Scientist', 'Alien', 100, 100, 999);
 
-// let Morty = new character('Morty', 'morty', 'Male', 20, 10, 100);
+let Morty = new Character('Morty', 'morty', 'Male', 20, 10, 100);
+playersArr.push(Rick, Morty);
 
 // Rick.printStats();
 // Morty.printStats();
@@ -138,6 +139,7 @@ function whoIsAlive() {
       }
     }
   }
+  init();
 }
 
 function listPlayers() {
@@ -151,13 +153,73 @@ function listPlayers() {
   init();
 }
 
+function attackPlayer() {
+  inquirer
+    .prompt([
+      {
+        type: 'list',
+        message: 'Who is the attacker?',
+        name: 'attacker',
+        choices: function() {
+          let players = [];
+          playersArr.forEach(i => {
+            players.push(i.name);
+          });
+          return players;
+        }
+      }
+    ])
+    .then(answer => {
+      inquirer
+        .prompt([
+          {
+            type: 'list',
+            message: `Who is ${answer.attacker} attacking?`,
+            name: 'foe',
+            choices: function() {
+              let foes = [];
+              for (let key in playersArr) {
+                if (playersArr[key].name !== answer.attacker) {
+                  foes.push(playersArr[key].name);
+                }
+              }
+              return foes;
+            }
+          }
+        ])
+        .then(newAnswer => {
+          let attackerObj = {};
+          let foeObj = {};
+          for (let key in playersArr) {
+            if (
+              playersArr[key].name === answer.attacker &&
+              playersArr[key] instanceof Object
+            ) {
+              attackerObj = playersArr[key];
+              // console.log('Attacker = ' + JSON.stringify(attackerObj, null, 2));
+              console.log(attackerObj);
+            } else if (
+              playersArr[key].name === newAnswer.foe &&
+              playersArr[key] instanceof Object
+            ) {
+              foeObj = playersArr[key];
+              // console.log('Foe = ' + JSON.stringify(foeObj, null, 2));
+              console.log(foeObj);
+            }
+          }
+
+          attackerObj.Attack(foeObj.name);
+        });
+    });
+}
+
 //main menu of the game
 function init() {
   inquirer
     .prompt([
       {
         type: 'list',
-        name: 'createChar',
+        name: 'init',
         choices: [
           'Create Character',
           'List Players',
@@ -170,7 +232,7 @@ function init() {
       }
     ])
     .then(answer => {
-      switch (answer.createChar) {
+      switch (answer.init) {
         case 'Create Character':
           promptCreateChar();
           break;
@@ -178,12 +240,16 @@ function init() {
           if (playersArr.length >= 1) {
             listPlayers();
           } else {
-            console.log("There aren't any current players");
+            console.log('No current players');
             init();
           }
           break;
         case 'Who is alive?':
           whoIsAlive();
+          break;
+
+        case 'Attack':
+          attackPlayer();
           break;
         case 'Exit':
           console.log(`Okay Byee!!`);
@@ -196,4 +262,5 @@ function init() {
     });
 }
 
+// This is how to start the game
 init();
